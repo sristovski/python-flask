@@ -3,13 +3,16 @@ kind: Service
 metadata:
   name: hello-python-service
 spec:
+  type: NodePort
+  ports:
+  - name: "5000"
+    port: 5000
+    targetPort: 5000
+    nodePort: 30080
   selector:
     app: hello-python
-  ports:
-  - protocol: "TCP"
-    port: 6000
-    targetPort: 5000
-  type: LoadBalancer
+status:
+  loadBalancer: {}
 
 ---
 apiVersion: apps/v1
@@ -32,3 +35,11 @@ spec:
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5000
+        resources:
+          limits:
+            cpu: 200m
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 50Mi
+      restartPolicy: Always
